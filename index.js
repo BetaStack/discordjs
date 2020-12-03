@@ -93,6 +93,36 @@ bot.on("message", async message => {
         }
 
 
+
+/** Logs */
+        if(cmd === `${prefix}hey`){
+            let msg = args.slice(0)
+            
+            message.channel.send(msg)
+
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+
+            /** logchannel.send(`${message.author} Just did the say command! The message was **<${msg}>**`) */
+
+            const logembed = new Discord.MessageEmbed()
+            .setTitle("Say Command Done")
+            .setColor("RED")
+            .setFooter(`${message.guild.name}`)
+
+            .addFields(
+                { name: `Command`, value: `Say Command`},
+                { name: `Author`, value: `${message.author}`},
+                { name: `Message`, value: `${msg}`},
+            )
+            logchannel.send(logembed)
+        }
+
+
+
+
+
+
+
 })
 
 bot.login(botsettings.token);
