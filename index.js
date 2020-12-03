@@ -94,7 +94,7 @@ bot.on("message", async message => {
 
 
 
-/** Logs */
+		/** Logs */
         if(cmd === `${prefix}hey`){
             let msg = args.slice(0)
             
@@ -119,6 +119,36 @@ bot.on("message", async message => {
 
 
 
+
+        /** Warning Command */
+
+        if(cmd === `${prefix}warn`){
+            if(message.member.roles.cache.has("781931939808411648")){
+            let user = message.mentions.members.first();
+            let warning = args.slice(23)
+
+            user.send(`You have been warned in __${message.guild.name}__ for the reason: **${warning}**`)
+
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+            /** logchannel.send(`The user ${user} just got warned by ${message.author} for the reason **<${warning}>**`) */
+
+            const logembed = new Discord.MessageEmbed()
+            .setTitle("User Warned")
+            .setColor("RED")
+            .setFooter(`- ${message.guild.name}`)
+            .addFields(
+                { name: `Warned By`, value: `${message.author}`},
+                { name: `Warning To`, value: `${user}`},
+                { name: `Warning`, value: `${warning}`},
+            )
+            logchannel.send(logembed)
+
+        } else {
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+            message.reply("You dont have the permissions for this command!")
+            logchannel.send(`${message.author} Just tried to do the warn command!`)
+        }
+    }
 
 
 
