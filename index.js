@@ -3,11 +3,6 @@ const botsettings = require('./botsettings.json');
 
 const bot = new Discord.Client({disableEveryone: true});
 
-bot.on("guildMemberAdd", member => {
-    const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === 'welcome')
-    welcomeChannel.send (`Welcome! ${member}`)
-})
-
 require("./util/eventHandler")(bot)
 
 const fs = require("fs");
@@ -51,7 +46,7 @@ bot.on("message", async message => {
 
         user.send(msg)
 
-        const logchannel = message.guild.channels.cache.find(chan => chan.id === "784132161678082048")
+        const logchannel = message.guild.channels.cache.find(chan => chan.id === "LOG_CHANNEL_ID")
         const logembed = new Discord.MessageEmbed()
 
         .setTitle("User Got a DM")
@@ -78,7 +73,7 @@ bot.on("message", async message => {
 
             user.send(dmembed)
 
-            const logchannel = message.guild.channels.cache.find(chan => chan.id === "784132161678082048")
+            const logchannel = message.guild.channels.cache.find(chan => chan.id === "LOG_CHANNEL_ID")
             const logembed = new Discord.MessageEmbed()
 
             .setTitle("User Got a DM")
@@ -94,13 +89,18 @@ bot.on("message", async message => {
 
 
 
-		/** Logs */
-        if(cmd === `${prefix}hey`){
+
+
+
+
+
+        /** Logs */
+        if(cmd === `${prefix}say`){
             let msg = args.slice(0)
             
             message.channel.send(msg)
 
-            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "LOG_CHANNEL_ID")
 
             /** logchannel.send(`${message.author} Just did the say command! The message was **<${msg}>**`) */
 
@@ -120,16 +120,29 @@ bot.on("message", async message => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         /** Warning Command */
 
         if(cmd === `${prefix}warn`){
-            if(message.member.roles.cache.has("781931939808411648")){
+            if(message.member.roles.cache.has("PERMISSION_ROLE")){
             let user = message.mentions.members.first();
             let warning = args.slice(23)
 
             user.send(`You have been warned in __${message.guild.name}__ for the reason: **${warning}**`)
 
-            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "LOG_CHANNEL_ID")
             /** logchannel.send(`The user ${user} just got warned by ${message.author} for the reason **<${warning}>**`) */
 
             const logembed = new Discord.MessageEmbed()
@@ -144,11 +157,78 @@ bot.on("message", async message => {
             logchannel.send(logembed)
 
         } else {
-            const logchannel = message.guild.channels.cache.find(channel => channel.id === "784132161678082048")
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "LOG_CHANNEL_ID")
             message.reply("You dont have the permissions for this command!")
             logchannel.send(`${message.author} Just tried to do the warn command!`)
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /** Verify System */
+        if(message.channel.id === "VERIFY_CHANNEL_ID"){
+        if(cmd === `${prefix}verify`){
+            message.delete( {timeout: 5000} )
+            const verifyrole = message.guild.roles.cache.find(role => role.id === "VERIFY_ROLE_ID")
+
+            message.member.roles.add(verifyrole)
+            message.reply("You have been verified and the role have been added to you user!").then(msg => msg.delete( {timeout: 10000} ))
+
+            const logchannel = message.guild.channels.cache.find(channel => channel.id === "LOG_CHANNEL_ID")
+            logchannel.send(`The user ${message.author} just verified!`)
+            
+        }
+    }
+
+    /** AdminVerify */
+    if(cmd === `${prefix}adminverify`){
+        message.delete( {timeout: 5000} )
+        if(message.member.roles.cache.has("PERMISSION_ROLE")){
+        let user = message.mentions.members.first()
+        const verifyrole = message.guild.roles.cache.find(role => role.id === "VERIFY_ROLE_ID")
+
+        user.roles.add(verifyrole)
+        message.channel.send(`${user} Was verified by ${message.author}`).then(msg => msg.delete( {timeout: 10000} ))
+
+        const logchannel = message.guild.channels.cache.find(channel => channel.id === "LOG_CHANNEL_ID")
+        logchannel.send(`${user} Just got Admin-verified by ${message.author}`)
+
+    } else {
+        message.reply("You dont have the permissions for that command!").then(msg => msg.delete( {timeout: 5000} ))
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
